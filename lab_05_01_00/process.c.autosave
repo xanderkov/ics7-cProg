@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include <stddef.h>
+#define OK 0
+#define NO_FILE -1
+#define NO_INFO -2
+#define NO_DEQUENCE -3
+
+
+int process(*f, *value)
+{
+    int n = 0, first = -1, second = -1, maximum = -1;
+    if (fscanf(f, "%d", first) == 1)
+    {
+        while (fscanf())
+    }
+    else 
+        return NO_INFO;
+    
+    return rc;
+}
