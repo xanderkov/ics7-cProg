@@ -1,179 +1,123 @@
-#include "defines.h"
-#include "my_snprintf.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "../inc/defines.h"
+#include "../inc/io_file.h"
+#include "../inc/sort_array.h"
 
 
-int compare_strings(char *str, char *check_str, int n, int n_check)
+bool is_array(const void *a, size_t na, const void *b, size_t nb, size_t size)
 {
-	int rc = ERR;
-	if (!strcmp(str, check_str) && n == n_check)
-		rc = OK;
-	else
+	const char *ac = a;
+	const char *bc = b;
+	
+	if (na != nb)
+		return true;
+	const char *pj = bc;
+	for (const char *pi = ac; pi < ac + na * size; pi += size)
 	{
-		printf("%s\n", str);
-		printf("%s\n", check_str);
-		printf("%d\n", n_check);
-		printf("%d\n", n);
+		if (*pi != *pj)
+			return true;
+		pj += size;
 	}
-	return rc;
+	return false;
 }
 
-int test_1_digit()
+void test_mysort()
 {
-	char check_str[N] = { 0 }, str[N] = { 0 };
-	int rc = ERR, n, n_check;
-	n = snprintf(check_str, 16, "c %d poehali", 15);
-	n_check = my_snprintf(str, 16, "c %d poehali", 15);
-	rc = compare_strings(str, check_str, n, n_check);
-	return rc;
+	int err_cnt = 0;
+	{
+		int a[] = { 1, 2, 3, 4, 5 };
+		int b[] = { 1, 2, 3, 4, 5 };
+		mysort(a, sizeof(a) / sizeof(a[0]), sizeof(int), compare_ints);
+		if (is_array(a, sizeof(a) / sizeof(a[0]), b, sizeof(b) / sizeof(b[0]), sizeof(int)))
+		{
+			err_cnt++;
+		}
+	}
+	{
+		int a[] = { 5, 4, 3, 2, 1 };
+		int b[] = { 1, 2, 3, 4, 5 };
+				
+		mysort(a, sizeof(a) / sizeof(a[0]), sizeof(int), compare_ints);
+		if (is_array(a, sizeof(a) / sizeof(a[0]), b, sizeof(b) / sizeof(b[0]), sizeof(int)))
+		{
+			err_cnt++;
+		}
+	}
+	{
+		int a[] = { 4, 3, 5, 1, 2 };
+		int b[] = { 1, 2, 3, 4, 5 };
+				
+		mysort(a, sizeof(a) / sizeof(a[0]), sizeof(int), compare_ints);
+		if (is_array(a, sizeof(a) / sizeof(a[0]), b, sizeof(b) / sizeof(b[0]), sizeof(int)))
+		{
+			err_cnt++;
+		}
+	}
+	{
+		int a[] = { 5,1,1,2,1,2,3 };
+		int b[] = { 1,1,1,2,2,3,5 };
+				
+		mysort(a, sizeof(a) / sizeof(a[0]), sizeof(int), compare_ints);
+		if (is_array(a, sizeof(a) / sizeof(a[0]), b, sizeof(b) / sizeof(b[0]), sizeof(int)))
+		{
+			err_cnt++;
+		}
+	}
+	{
+		int a[] = { 5,4 };
+		int b[] = { 4,5 };
+				
+		mysort(a, sizeof(a) / sizeof(a[0]), sizeof(int), compare_ints);
+		if (is_array(a, sizeof(a) / sizeof(a[0]), b, sizeof(b) / sizeof(b[0]), sizeof(int)))
+		{
+			err_cnt++;
+		}
+	}
+	{
+		int a[] = { 1,2 };
+		int b[] = { 1,2 };
+				
+		mysort(a, sizeof(a) / sizeof(a[0]), sizeof(int), compare_ints);
+		if (is_array(a, sizeof(a) / sizeof(a[0]), b, sizeof(b) / sizeof(b[0]), sizeof(int)))
+		{
+			err_cnt++;
+		}
+	}
+	{
+		int a[] = { 5 };
+		int b[] = { 5 };
+				
+		mysort(a, sizeof(a) / sizeof(a[0]), sizeof(int), compare_ints);
+		if (is_array(a, sizeof(a) / sizeof(a[0]), b, sizeof(b) / sizeof(b[0]), sizeof(int)))
+		{
+			err_cnt++;
+		}
+	}
+	if (err_cnt > 0)
+		printf("%d", err_cnt);
 }
 
-int test_1_string()
+void test_key()
 {
-	char check_str[N] = { 0 }, str[N] = { 0 };
-	int rc = ERR, n, n_check;
-	n = snprintf(check_str, 6, "c %s", "Sus");
-	n_check = my_snprintf(str, 6, "c %s", "Sus");
-	rc = compare_strings(str, check_str, n, n_check);
-	return rc;
-}
-
-int test_2_string()
-{
-	char check_str[N] = { 0 }, str[N] = { 0 };
-	int rc = ERR, n, n_check;
-	n = snprintf(check_str, sizeof(check_str), "c %s %d%s%x", "Sus", 88, "amogus", 523);
-	n_check = my_snprintf(str, sizeof(str), "c %s %d%s%x", "Sus", 88, "amogus", 523);
-	rc = compare_strings(str, check_str, n, n_check);
-	return rc;
-}
-
-int test_1_char()
-{
-	char check_str[N] = { 0 }, str[N] = { 0 };
-	int rc = ERR, n, n_check;
-	n = snprintf(check_str, sizeof(check_str), "c %c", 'S');
-	n_check = my_snprintf(str, sizeof(check_str), "c %c", 'S');
-	rc = compare_strings(str, check_str, n, n_check);
-	return rc;
-}
-
-int test_2_minus_digit()
-{
-	char check_str[N] = { 0 }, str[N] = { 0 };
-	int rc = ERR, n, n_check;
-	n = snprintf(check_str, sizeof(check_str), "c %d", -16);
-	n_check = my_snprintf(str, sizeof(check_str), "c %d", -16);
-	rc = compare_strings(str, check_str, n, n_check);
-	return rc;
-}
-
-
-int test_2_chars()
-{
-	char check_str[N] = { 0 }, str[N] = { 0 };
-	int rc = ERR, n, n_check;
-	n = snprintf(check_str, sizeof(check_str), "%c%c%c%c%c", 'H', 'e', 'l', 'l', 'o');
-	n_check = my_snprintf(str, sizeof(check_str), "%c%c%c%c%c", 'H', 'e', 'l', 'l', 'o');
-	rc = compare_strings(str, check_str, n, n_check);
-	return rc;
-}
-
-int test_3_string()
-{
-	char check_str[N] = { 0 }, str[N] = { 0 };
-	int rc = ERR, n, n_check;
-	const char *s = "Loooooooooooooooooooooooooooooong!";
-	n = snprintf(check_str, sizeof(check_str), "c %s", s);
-	n_check = my_snprintf(str, sizeof(check_str), "c %s", s);
-	rc = compare_strings(str, check_str, n, n_check);
-	return rc;	
-}
-
-int test_4_string()
-{
-	char check_str[N] = { 0 }, str[N] = { 0 };
-	int rc = ERR, n, n_check;
-	const char *s = "Loooooooooooooooooooooooooooooong!";
-	n_check = snprintf(check_str, 10, "%s", s);
-	n = my_snprintf(str, 10, "%s", s);
-	rc = compare_strings(str, check_str, n, n_check);
-	return rc;	
-}
-
-
-int test_long_string()
-{
-	char check_str[N] = { 0 }, str[N] = { 0 };
-	int rc = ERR, n, n_check;
-	const char *s = "Loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong!";
-	n_check = snprintf(check_str, N, "%s", s);
-	n = my_snprintf(str, N, "%s", s);
-	rc = compare_strings(str, check_str, n, n_check);
-	return rc;
-}
-
-
-int test_limits()
-{
-	char *check_str = malloc(6), *str = malloc(6);
-	int rc = ERR, n, n_check;
-	
-	const char *s = "0123456";
-	n = my_snprintf(str, 5, "%s", s);
-	n_check = snprintf(check_str, 5, "%s", s);
-	
-	rc = compare_strings(str, check_str, n, n_check);
-	free(check_str);
-	free(str);
-	return rc;
-}
-
-int test_one_char()
-{
-	char *check_str = malloc(2), *str = malloc(2);
-	int rc = ERR, n, n_check;
-	
-	const char c = 'a';
-	n = my_snprintf(str, 2, "%c", c);
-	n_check = snprintf(check_str, 2, "%c", c);
-	
-	rc = compare_strings(str, check_str, n, n_check);
-	free(check_str);
-	free(str);
-	return rc;
-}
-
-int test_3_hex()
-{
-	char check_str[N] = { 0 }, str[N] = { 0 };
-	int rc = ERR, n, n_check;
-	
-	n = snprintf(check_str, sizeof(check_str), "%x", 10);
-	n_check = my_snprintf(str, sizeof(str), "%x", 10);
-	rc = compare_strings(str, check_str, n, n_check);
-	
-	return rc;
+	int err_cnt = 0;
+	{
+		int a[] = { 9, 8000, 2, 500, 3, 1 };
+		int b[] = { 8000, 500, 3 };
+		int *cb, *ce;
+		
+		key(a, a + sizeof(a) / sizeof(a[0]), &cb, &ce);
+		if (is_array(cb, ce - cb, b, sizeof(b) / sizeof(b[0]), sizeof(int)))
+		{
+			err_cnt++;
+		}
+		free(cb);
+	}
+	if (err_cnt > 0)
+		printf("%d", err_cnt);
 }
 
 int main()
 {
-	int err = OK;
-	err += test_1_digit();
-	err += test_1_string();
-	err += test_1_char();
-	err += test_2_minus_digit();
-	err += test_2_string();
-	err += test_2_chars();
-	err += test_3_string();
-	err += test_4_string();
-	err += test_long_string();
-	err += test_limits();
-	err += test_one_char();
-	err += test_3_hex();
-	return OK;
+	test_mysort();
+	test_key();
+	return 0;
 }
-
-
