@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "constants.h": "c",
+        "item_lib.h": "c",
+        "type_traits": "c",
+        "exception": "c",
+        "operations.h": "c"
+    }
+}
