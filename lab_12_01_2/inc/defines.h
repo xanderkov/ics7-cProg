@@ -8,6 +8,7 @@
 #define WRONG_ARG -3
 #define NO 0
 #define YES 1
+#define NULL_LIB -4
 
 #ifdef ARR_EXPORTS
 #define ARR_DLL __declspec(dllexport)

@@ -1,13 +1,18 @@
 #include "defines.h"
 #include "io_file.h"
 #include "sort_array.h"
+#include <windows.h>
 
 
 int main(int argc, char **argv)
 {
     int rc = WRONG_ARG, *arr, n = 0, *new_arr, *new_end;
-    
-    if (argc > 2 && argc < 5)
+    HMODULE iolib, sortlib;
+    sortlib = LoadLibrary("sort_array.dll");
+    iolib = LoadLibrary("io_file.dll");
+    if (!sortlib || !iolib)
+        rc = NULL_LIB;
+    if (argc > 2 && argc < 5 && rc == WRONG_ARG)
     {
         rc = read_file(argv[1], &arr, &n);
         if (rc == OK)
@@ -34,6 +39,11 @@ int main(int argc, char **argv)
             free(arr);
             arr = NULL;
         }
+    }
+    if (rc != NULL_LIB)
+    {
+        FreeLibrary(iolib);
+        FreeLibrary(sortlib);
     }
     return rc;
 }
