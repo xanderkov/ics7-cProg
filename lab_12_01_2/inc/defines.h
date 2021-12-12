@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #define OK 0
 #define NULL_FILE -1
@@ -9,10 +10,5 @@
 #define NO 0
 #define YES 1
 #define NULL_LIB -4
-
-#ifdef ARR_EXPORTS
-#define ARR_DLL __declspec(dllexport)
-#else
-#define ARR_DLL __declspec(dllimport)
-#endif
-#define ARR_DECL __cdecl
+#define ERR_READ -5
+#define NOT_SQUARE -6
